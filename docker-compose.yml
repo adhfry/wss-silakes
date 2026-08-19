@@ -4,12 +4,15 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: 413112a0cf1f33db302ffee90615af465139f36ed54033d0
       MYSQL_DATABASE: realtime_silakes
       MYSQL_USER: phoenix_user
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: a0f02ac20586f28ff3d6d03d23c8bf970a56abd61d3b7d08
     ports:
-      - "33306:3306"
+      # 127.0.0.1 saja -- audit keamanan 2026-08-19 menemukan port ini publicly exposed ke
+      # internet (docker-proxy melewati ufw), padahal aplikasi web sudah connect lewat nama
+      # docker internal "db", bukan port host ini sama sekali. JANGAN dikembalikan ke "33306:3306".
+      - "127.0.0.1:33306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
