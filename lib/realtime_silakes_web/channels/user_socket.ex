@@ -12,6 +12,8 @@ defmodule RealtimeSilakesWeb.UserSocket do
   # Presence GLOBAL app-wide "siapa yang sedang online" (widget header) --
   # lihat online_users_channel.ex
   channel "online_users:*", RealtimeSilakesWeb.OnlineUsersChannel
+  # Satu channel per percakapan chat -- lihat chat_conversation_channel.ex
+  channel "chat_conversation:*", RealtimeSilakesWeb.ChatConversationChannel
 
   def connect(_params, socket, _connect_info) do
     IO.puts("Kesini")
