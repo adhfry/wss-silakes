@@ -12,6 +12,9 @@ defmodule RealtimeSilakes.Application do
       RealtimeSilakes.Repo,
       {DNSCluster, query: Application.get_env(:realtime_silakes, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: RealtimeSilakes.PubSub},
+      # Presence utk SiRAPAT Workspace (siapa standby di halaman rapat) --
+      # lihat channels/presence.ex
+      RealtimeSilakesWeb.Presence,
       # Start the Finch HTTP client for sending emails
       {Finch, name: RealtimeSilakes.Finch},
       # Start a worker by calling: RealtimeSilakes.Worker.start_link(arg)
