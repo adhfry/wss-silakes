@@ -12,6 +12,16 @@ defmodule RealtimeSilakesWeb.ChatConversationChannel do
   pesannya sendiri muncul dari respons HTTP langsung, tidak perlu
   "gema" dari socket).
 
+  "typing"/"stop_typing" -- indikator mengetik (permintaan user), MURNI
+  ephemeral (tidak pernah disimpan ke database sama sekali) -- relay apa
+  adanya, sama persis pola "new_message".
+
+  "read" -- dipicu FE SETELAH POST /chat/conversations/{id}/read ke
+  Laravel sukses, supaya centang 2 (dibaca) di sisi pengirim update
+  realtime tanpa perlu refresh/poll -- sumber kebenaran TETAP
+  conversation_participants.last_read_at di database, ini cuma notifikasi
+  tambahan.
+
   TIDAK ada validasi keanggotaan percakapan di level channel ini (BEDA dari
   sirapat_workspace/acara_room yang juga tidak validasi ketat) -- otorisasi
   SUNGGUHAN (siapa boleh baca/kirim pesan percakapan ini) tetap di Laravel
@@ -37,6 +47,21 @@ defmodule RealtimeSilakesWeb.ChatConversationChannel do
 
   def handle_in("new_message", payload, socket) do
     broadcast_from!(socket, "new_message", Map.put(payload, "from_user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
+
+  def handle_in("typing", payload, socket) do
+    broadcast_from!(socket, "typing", Map.put(payload, "from_user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
+
+  def handle_in("stop_typing", payload, socket) do
+    broadcast_from!(socket, "stop_typing", Map.put(payload, "from_user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
+
+  def handle_in("read", payload, socket) do
+    broadcast_from!(socket, "read", Map.put(payload, "from_user_id", socket.assigns.user_id))
     {:noreply, socket}
   end
 end
