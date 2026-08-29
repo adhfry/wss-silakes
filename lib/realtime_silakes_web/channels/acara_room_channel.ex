@@ -13,6 +13,15 @@ defmodule RealtimeSilakesWeb.AcaraRoomChannel do
   pendaftaran, ATLM setelah simpan hasil) -- broadcast_from! mendorong
   payload LANGSUNG ke klien lain yg standby di topic ini, BUKAN pola
   ping-lalu-refetch Firebase yg dipakai CFD/OPD saat ini.
+
+  "hasil_typing" (permintaan user -- kolaborasi live antar ATLM): FE
+  mendorong INI tiap kali staf mengetik di kolom hasil (didebounce di sisi
+  klien), berisi nilai MENTAH yang sedang diketik (bukan cuma sinyal) supaya
+  ATLM lain benar-benar melihat teksnya berubah karakter demi karakter,
+  persis "siapa mengetik di kolom mana" yang diminta. TIDAK disimpan ke DB
+  sama sekali di sini -- murni siaran draft langsung antar klien, cuma jadi
+  data sungguhan sesudah staf pencet Simpan lewat jalur HTTP updateHasil
+  yang sudah ada.
   """
   use Phoenix.Channel
   alias RealtimeSilakesWeb.Presence
@@ -60,6 +69,11 @@ defmodule RealtimeSilakesWeb.AcaraRoomChannel do
 
   def handle_in("hasil_updated", payload, socket) do
     broadcast_from!(socket, "hasil_updated", Map.put(payload, "user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
+
+  def handle_in("hasil_typing", payload, socket) do
+    broadcast_from!(socket, "hasil_typing", Map.put(payload, "user_id", socket.assigns.user_id))
     {:noreply, socket}
   end
 end
