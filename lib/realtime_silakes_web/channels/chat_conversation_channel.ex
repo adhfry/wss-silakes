@@ -64,4 +64,13 @@ defmodule RealtimeSilakesWeb.ChatConversationChannel do
     broadcast_from!(socket, "read", Map.put(payload, "from_user_id", socket.assigns.user_id))
     {:noreply, socket}
   end
+
+  # "message_updated" -- dipicu FE/MATRIX SETELAH DELETE /chat/messages/{id}
+  # (scope=all) ke Laravel sukses, supaya bubble di peserta lain langsung
+  # berubah jadi "Pesan ini telah dihapus". Payload = pesan hasil respons
+  # Laravel; sumber kebenaran tetap database.
+  def handle_in("message_updated", payload, socket) do
+    broadcast_from!(socket, "message_updated", Map.put(payload, "from_user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
 end
