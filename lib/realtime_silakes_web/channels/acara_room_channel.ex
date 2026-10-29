@@ -76,4 +76,12 @@ defmodule RealtimeSilakesWeb.AcaraRoomChannel do
     broadcast_from!(socket, "hasil_typing", Map.put(payload, "user_id", socket.assigns.user_id))
     {:noreply, socket}
   end
+
+  # Pendaftaran bersama SINTA (laptop monitor + tablet kamera): sinyal ringan
+  # antar perangkat -- pairing, SINTA berpindah, entri baru, pengaturan.
+  # Data sungguhan tetap lewat HTTP Laravel; ini hanya pemicu tampilan.
+  def handle_in("sinta_event", payload, socket) do
+    broadcast_from!(socket, "sinta_event", Map.put(payload, "user_id", socket.assigns.user_id))
+    {:noreply, socket}
+  end
 end
